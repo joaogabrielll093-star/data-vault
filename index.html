@@ -1,144 +1,129 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DATA VAULT</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>DATA VAULT — Cofre Digital</title>
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  padding: 25px;
-  background: #0b1020;
-  color: #fff;
-  font-family: Arial, sans-serif;
-}
-.container {
-  max-width: 480px;
-  margin: 45px auto;
-  padding: 25px;
-  background: #151d32;
-  border-radius: 16px;
-}
-h1 { color: #4da3ff; text-align: center; }
-p { color: #aab5ca; }
-input, textarea, button {
-  width: 100%;
-  padding: 13px;
-  margin-top: 12px;
-  border: 0;
-  border-radius: 8px;
-}
-input, textarea {
-  background: #26334d;
-  color: white;
-}
-button {
-  background: #2478db;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-.item {
-  background: #26334d;
-  padding: 14px;
-  margin-top: 12px;
-  border-radius: 9px;
-  overflow-wrap: anywhere;
-}
-.hidden { display: none; }
+:root{color-scheme:dark;--bg:#0b1020;--panel:#151f35;--field:#202e49;--line:#2b3b59;--blue:#38a5ff;--cyan:#20d5e8;--muted:#a9b8cf;--red:#d94b67;--green:#36c98a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#142c50 0,#0b1020 55%);color:#f4f7ff;font:16px/1.5 Arial,sans-serif;min-height:100vh;padding:24px}
+.wrap{max-width:760px;margin:35px auto}.panel{background:rgba(21,31,53,.96);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 18px 60px #0006}
+.brand{text-align:center;margin-bottom:24px}.logo{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#061426;font-size:28px;font-weight:900}.brand h1{margin:10px 0 2px;letter-spacing:2px;color:#58bdff}.muted{color:var(--muted)}.small{font-size:13px}.hidden{display:none!important}
+label{display:block;margin:14px 0 6px;color:#dce8fa;font-weight:700}input,textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:white;font:inherit;outline:none}input:focus,textarea:focus{border-color:var(--blue)}textarea{min-height:105px;resize:vertical}
+button{border:0;border-radius:10px;padding:12px 16px;font-weight:700;font-size:15px;cursor:pointer;background:linear-gradient(90deg,#1689ed,#12bcd4);color:#061426}button:disabled{opacity:.55;cursor:wait}.secondary{background:#293a58;color:#f2f6ff}.danger{background:#6f293c;color:#fff}.full{width:100%;margin-top:16px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.status{padding:6px 10px;border-radius:99px;background:#123d36;color:#77edbd;font-size:12px}.notice{padding:12px;border-radius:10px;background:#102d49;border:1px solid #24537a;color:#cfeaff;font-size:13px;margin:14px 0}.warning{background:#3d2d17;border-color:#77551e;color:#ffe2a8}.record{border:1px solid var(--line);background:#1b2942;padding:16px;border-radius:12px;margin-top:12px;overflow-wrap:anywhere}.record h3{margin:0 0 7px;color:#76c6ff}.record p{white-space:pre-wrap;margin:0 0 12px;color:#e2eaf7}.record .row button{flex:0 0 auto}.empty{text-align:center;padding:25px;color:var(--muted)}.foot{text-align:center;color:#8192ad;font-size:12px;margin-top:18px}
+@media(max-width:520px){body{padding:14px}.wrap{margin:12px auto}.panel{padding:20px}.top{align-items:flex-start}}
 </style>
 </head>
 <body>
+<main class="wrap">
+<section class="panel" id="gate">
+  <div class="brand"><div class="logo">DV</div><h1>DATA VAULT</h1><div class="muted">Cofre digital para proteção de informações</div></div>
+  <div id="setup" class="hidden">
+    <h2>Criar meu cofre</h2>
+    <p class="muted">Defina uma senha forte. Ela será usada para criptografar seus registros neste dispositivo.</p>
+    <label for="newPass">Criar senha</label><input id="newPass" type="password" autocomplete="new-password" placeholder="Use pelo menos 8 caracteres">
+    <label for="confirmPass">Confirmar senha</label><input id="confirmPass" type="password" autocomplete="new-password" placeholder="Repita a senha">
+    <button class="full" id="createBtn">Criar cofre</button>
+  </div>
+  <div id="unlock" class="hidden">
+    <h2>Acessar cofre</h2><p class="muted">Digite sua senha para desbloquear seus registros.</p>
+    <label for="pass">Senha</label><input id="pass" type="password" autocomplete="current-password" placeholder="Sua senha">
+    <button class="full" id="unlockBtn">Desbloquear</button>
+    <p id="loginMsg" class="small muted" role="status"></p>
+  </div>
+  <div class="notice warning"><b>Importante:</b> este projeto criptografa os dados no próprio navegador. A senha não pode ser recuperada. Se limpar os dados do navegador ou trocar de dispositivo, os registros podem ser perdidos. Não use como serviço bancário ou para dados reais críticos.</div>
+</section>
 
-<div class="container" id="login">
-<h1>DATA VAULT</h1>
-<p style="text-align:center">Seu cofre digital</p>
-<input type="password" id="senha" placeholder="Senha de acesso">
-<button onclick="entrar()">Acessar cofre</button>
-</div>
-
-<div class="container hidden" id="cofre">
-<h1>DATA VAULT</h1>
-<p>Armazenamento de informações</p>
-
-<input id="titulo" placeholder="Nome do registro">
-<textarea id="dados" placeholder="Informações"></textarea>
-<button onclick="salvar()">Salvar registro</button>
-
-<h3>Meus registros</h3>
-<div id="lista"></div>
-
-<button onclick="bloquear()" style="background:#a83245">
-Bloquear cofre
-</button>
-</div>
-
+<section class="panel hidden" id="vault">
+  <div class="top"><div><div class="brand" style="text-align:left;margin:0"><h1 style="margin:0">DATA VAULT</h1><span class="muted small">Cofre desbloqueado</span></div></div><div class="row" style="flex:0 0 auto"><span class="status">● Criptografia ativa</span><button class="secondary" id="lockBtn">Bloquear</button></div></div>
+  <div class="notice">Os registros são protegidos com AES-GCM e uma chave derivada da sua senha (PBKDF2). O conteúdo armazenado no navegador fica criptografado.</div>
+  <h2>Novo registro</h2>
+  <label for="title">Nome do registro</label><input id="title" maxlength="100" placeholder="Ex.: Documento escolar">
+  <label for="content">Informações</label><textarea id="content" maxlength="5000" placeholder="Digite as informações que deseja guardar"></textarea>
+  <button class="full" id="saveBtn">Criptografar e salvar</button>
+  <div class="top" style="margin-top:28px"><h2 style="margin:0">Meus registros</h2><span class="muted small" id="count">0 registros</span></div>
+  <div id="records"><div class="empty">Nenhum registro salvo ainda.</div></div>
+</section>
+<div class="foot">DATA VAULT • Projeto demonstrativo de segurança da informação</div>
+</main>
 <script>
-const SENHA = "1234";
-let registros = JSON.parse(localStorage.getItem("vault") || "[]");
-
-function entrar() {
-  if (document.getElementById("senha").value === SENHA) {
-    login.classList.add("hidden");
-    cofre.classList.remove("hidden");
-    atualizar();
-  } else {
-    alert("Senha incorreta!");
-  }
+"use strict";
+const DBKEY="dataVaultEncryptedV1";
+const $=id=>document.getElementById(id);
+let masterKey=null, records=[];
+const enc=new TextEncoder(), dec=new TextDecoder();
+function b64(bytes){let s="";bytes.forEach(b=>s+=String.fromCharCode(b));return btoa(s)}
+function unb64(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
+function randomBytes(n){return crypto.getRandomValues(new Uint8Array(n))}
+async function derive(password,salt){
+ const material=await crypto.subtle.importKey("raw",enc.encode(password),"PBKDF2",false,["deriveKey"]);
+ return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:250000,hash:"SHA-256"},material,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
 }
-
-function salvar() {
-  const titulo = document.getElementById("titulo").value.trim();
-  const dados = document.getElementById("dados").value.trim();
-
-  if (!titulo || !dados) {
-    alert("Preencha os campos!");
-    return;
-  }
-
-  registros.push({titulo, dados});
-  localStorage.setItem("vault", JSON.stringify(registros));
-
-  document.getElementById("titulo").value = "";
-  document.getElementById("dados").value = "";
-  atualizar();
+async function encryptObject(obj){
+ const iv=randomBytes(12),plain=enc.encode(JSON.stringify(obj));
+ const cipher=await crypto.subtle.encrypt({name:"AES-GCM",iv},masterKey,plain);
+ return {iv:b64(iv),data:b64(new Uint8Array(cipher))};
 }
-
-function atualizar() {
-  const lista = document.getElementById("lista");
-  lista.replaceChildren();
-
-  registros.forEach((r, i) => {
-    const item = document.createElement("div");
-    item.className = "item";
-
-    const nome = document.createElement("strong");
-    nome.textContent = r.titulo;
-
-    const conteudo = document.createElement("p");
-    conteudo.textContent = r.dados;
-
-    const excluir = document.createElement("button");
-    excluir.textContent = "Excluir";
-    excluir.style.background = "#a83245";
-    excluir.onclick = () => {
-      registros.splice(i, 1);
-      localStorage.setItem("vault", JSON.stringify(registros));
-      atualizar();
-    };
-
-    item.append(nome, conteudo, excluir);
-    lista.appendChild(item);
-  });
+async function decryptObject(item){
+ const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(item.iv)},masterKey,unb64(item.data));
+ return JSON.parse(dec.decode(plain));
 }
-
-function bloquear() {
-  cofre.classList.add("hidden");
-  login.classList.remove("hidden");
-  document.getElementById("senha").value = "";
+function readStore(){try{return JSON.parse(localStorage.getItem(DBKEY)||"null")}catch{return null}}
+function showGate(){ $("gate").classList.remove("hidden");$("vault").classList.add("hidden"); }
+function showVault(){ $("gate").classList.add("hidden");$("vault").classList.remove("hidden");render()}
+function init(){const stored=readStore();$("setup").classList.toggle("hidden",!!stored);$("unlock").classList.toggle("hidden",!stored)}
+async function createVault(){
+ const p=$("newPass").value,c=$("confirmPass").value;
+ if(p.length<8){alert("A senha precisa ter pelo menos 8 caracteres.");return}
+ if(p!==c){alert("As senhas não coincidem.");return}
+ const salt=randomBytes(16);masterKey=await derive(p,salt);
+ const encrypted=await encryptObject([]);
+ localStorage.setItem(DBKEY,JSON.stringify({version:1,salt:b64(salt),payload:encrypted}));
+ records=[];$("newPass").value="";$("confirmPass").value="";showVault();
 }
+async function unlockVault(){
+ const stored=readStore();if(!stored)return;
+ try{
+  masterKey=await derive($("pass").value,unb64(stored.salt));
+  records=await decryptObject(stored.payload);
+  $("pass").value="";$("loginMsg").textContent="";showVault();
+ }catch{masterKey=null;$("loginMsg").textContent="Senha incorreta ou dados danificados."}
+}
+async function persist(){
+ const stored=readStore();stored.payload=await encryptObject(records);
+ localStorage.setItem(DBKEY,JSON.stringify(stored));
+}
+function render(){
+ const host=$("records");host.replaceChildren();$("count").textContent=records.length+" registro(s)";
+ if(!records.length){const e=document.createElement("div");e.className="empty";e.textContent="Nenhum registro salvo ainda.";host.append(e);return}
+ records.forEach((r,i)=>{
+  const card=document.createElement("article");card.className="record";
+  const h=document.createElement("h3");h.textContent=r.title;
+  const p=document.createElement("p");p.textContent=r.content;
+  const date=document.createElement("div");date.className="small muted";date.textContent="Salvo em "+new Date(r.created).toLocaleString("pt-BR");
+  const del=document.createElement("button");del.className="danger";del.textContent="Excluir";
+  del.addEventListener("click",async()=>{if(confirm("Excluir este registro permanentemente?")){records.splice(i,1);await persist();render()}});
+  card.append(h,p,date);const row=document.createElement("div");row.className="row";row.style.marginTop="12px";row.append(del);card.append(row);host.append(card);
+ });
+}
+async function saveRecord(){
+ const title=$("title").value.trim(),content=$("content").value.trim();
+ if(!title||!content){alert("Preencha o nome e as informações.");return}
+ const btn=$("saveBtn");btn.disabled=true;
+ try{records.unshift({title,content,created:Date.now()});await persist();$("title").value="";$("content").value="";render()}
+ catch(e){alert("Não foi possível salvar. Tente novamente.")}
+ finally{btn.disabled=false}
+}
+function lockVault(){masterKey=null;records=[];showGate();init()}
+$("createBtn").addEventListener("click",createVault);
+$("unlockBtn").addEventListener("click",unlockVault);
+$("pass").addEventListener("keydown",e=>{if(e.key==="Enter")unlockVault()});
+$("createBtn").addEventListener("click",()=>{$("createBtn").disabled=true;setTimeout(()=>$("createBtn").disabled=false,800)});
+$("saveBtn").addEventListener("click",saveRecord);
+$("lockBtn").addEventListener("click",lockVault);
+if(!window.crypto?.subtle){$("setup").classList.remove("hidden");$("unlock").classList.add("hidden");alert("Este navegador não oferece suporte à criptografia necessária. Abra o site em um navegador atualizado com HTTPS.")}
+else init();
 </script>
-</body>
+</body
 </html>
